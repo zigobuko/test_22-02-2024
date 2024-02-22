@@ -1,0 +1,9 @@
+{
+    "metadata_message": "testMetadata",
+    "metadata_start_index": 1,
+    "wait": 2,
+    "arns": {
+        "My STD2": "arn:aws:ivs:us-west-2:748281799172:channel/Nm7r6zcnX2Ju"
+    },
+    "credentials": null
+}
