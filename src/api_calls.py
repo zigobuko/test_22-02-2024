@@ -6,31 +6,47 @@ import json
 import data
 from gui import MainTab
 
+
 def get_arn_by_name(window: MainTab, settings: data.AppSettings) -> str:
     selected_arn_name = window.selected_arn.get()
     selected_arn = settings.arns[selected_arn_name]
     return selected_arn
 
+
 def send_metadata(window: MainTab, settings: data.AppSettings) -> None:
     window.write_to_log("Started")
 
-    check_interval = 0.1  # Check the stop_flag every 0.1 seconds
+    # Value to check the stop_flag every 0.1 seconds
+    check_interval = 0.1
 
-    selected_arn = get_arn_by_name(window, settings) # get arn selected in main tab
-    send_interval = settings.wait # 'delay' from settings tab
-    metadata_index = settings.metadata_start_index # 'index' from settings tab
+    # Get arn of channel selected in main tab
+    selected_arn = get_arn_by_name(window, settings)
+
+    # Get 'delay' from settings
+    send_interval = settings.wait
+
+    # Get 'index' from settings
+    metadata_index = settings.metadata_start_index
+
+    # Get metadata 'message' from settings
     message = settings.metadata_message
-    credentials = settings.credentials
-    cred_values = tuple(credentials.values())[:3] # extracting values for access_key, secret_access_key, session_token
 
-    # Define the access key, secret access key, and session token
+    # Get 'credentials' from settings
+    credentials = settings.credentials
+
+    # Extract and define values for access_key, secret_access_key, session_token
+    cred_values = tuple(credentials.values())[:3]
     access_key, secret_access_key, session_token = cred_values
 
     # Define the API endpoint URL
-    endpoint_url = data.AppSettings.endpoint_url
+    # endpoint_url = data.AppSettings.endpoint_url
+    # TODO Check if everything works
+    endpoint_url = settings.endpoint_url
 
     # Define the headers
-    headers = data.AppSettings.headers
+    # headers = data.AppSettings.headers
+    # TODO Check if everything works
+    headers = settings.headers
 
     if all((access_key, secret_access_key, session_token)):
         # Create an instance of AWSRequestsAuth
@@ -39,34 +55,35 @@ def send_metadata(window: MainTab, settings: data.AppSettings) -> None:
         try:
             print("S----------------")
             # Make the API calls
-            while not window.stop_flag: # window.stop_flag = True
+            while not window.stop_flag:
                 # Define the custom request body
                 request_body = {
                     "channelArn": selected_arn,
                     "metadata": f"{message}_{metadata_index}"
                 }
 
-                request_time = helper.now_datetime(obj=True) # get request time
-
-                # window.write_to_log(f"Sending: {request_body['metadata']}")
+                # Get request time
+                request_time = helper.now_datetime(obj=True)
 
                 response = requests.post(endpoint_url, json=request_body, headers=headers, auth=auth)
 
+                # Get response time
+                response_time = helper.now_datetime(obj=True)
 
-                response_time = helper.now_datetime(obj=True) # get response time
-
-                # print("Response: ", response_time, response.headers) # use later for delay/wait time correction
-
+                # Get message from response
                 message_from_response = get_message_from_response(response, window)
 
+                # Write response message into Main tab's logs window
                 window.write_to_log(message_from_response)
 
                 metadata_index += 1
 
-                # Correct send_interval according to request->response delay time
+                # Correct send_interval according to delay time of request->response
                 time_correction = helper.time_correction(request_time, response_time)
 
-                corrected_send_interval = max(send_interval - time_correction, 0) # this also ensures that the result >=0
+                corrected_send_interval = max(send_interval - time_correction,
+                                              0)  # this also ensures that the result >=0
+                # TODO: remove prints
                 print(request_time, response_time)
                 print("Time correction: ", time_correction)
                 print("Send interval (corrected): ", corrected_send_interval)
@@ -82,6 +99,7 @@ def send_metadata(window: MainTab, settings: data.AppSettings) -> None:
             window.write_to_log("Stopped")
             window.stop_action()
 
+
 def create_auth_instance(access_key, secret_access_key, session_token):
     auth = AWSRequestsAuth(
         aws_access_key=access_key,
@@ -93,12 +111,14 @@ def create_auth_instance(access_key, secret_access_key, session_token):
     )
     return auth
 
+
 def main(window: MainTab, settings: data.AppSettings) -> None:
     if settings.credentials is not None:
         send_metadata(window, settings)
     else:
-        window.write_to_log(f"{data.warning_prefix}Please provide credentials")
+        window.write_to_log(f"{data.WARNING_PREFIX}Please provide credentials")
         window.stop_action(window.json_entry)
+
 
 def get_message_from_response(response, window: MainTab) -> str:
     if response.text:
@@ -110,17 +130,17 @@ def get_message_from_response(response, window: MainTab) -> str:
 
             # Try to get the value associated with the key 'message'
             message = lowercase_data.get('message')
-            cleared_message = f"{data.warning_prefix}{helper.remove_from_newline(message)}"
+            cleared_message = f"{data.WARNING_PREFIX}{helper.remove_from_newline(message)}"
 
             if cleared_message is not None:
                 window.stop_action()
                 return cleared_message
             else:
                 window.stop_action()
-                return f"{data.warning_prefix}No message found in the response."
+                return f"{data.WARNING_PREFIX}No message found in the response."
         except json.JSONDecodeError as e:
             window.stop_action()
-            return f"{data.warning_prefix}Error decoding response.text JSON: {e}"
+            return f"{data.WARNING_PREFIX}Error decoding response.text JSON: {e}"
     else:
         return f"{json.loads(response.request.body.decode('utf-8'))['metadata']}"
 

@@ -5,14 +5,17 @@ import api_calls
 import threading
 import helper
 
-# Modify ttk.Button to handle Return key presses
+
 class TButton(ttk.Button):
+    """Modifies ttk.Button to handle Return key presses"""
+
     def __init__(self, master=None, **kwargs):
         super().__init__(master, **kwargs)
         self.bind('<Return>', self.on_return_press)
 
     def on_return_press(self, event) -> None:
         self.invoke()
+
 
 def set_focus_to_widget(widget) -> None:
     widget.focus_set()
@@ -29,7 +32,9 @@ class App(tk.Tk):
         data.AppSettings.from_file()
 
         # Add app title
-        title_label = ttk.Label(master=self, text='Sequential Metadata Sending Tool', font='Calibri 24 bold')
+        title_label = ttk.Label(master=self,
+                                text='Sequential Metadata Sending Tool',
+                                font='Calibri 24 bold')
         title_label.pack()
 
         # create notebook
@@ -55,9 +60,12 @@ class App(tk.Tk):
             self.main_tab.update_arn_dropbox()
             self.settings_tab.insert_data_to_treeview(data.AppSettings.arns)
         else:
-            self.notebook.select(1) # switch to Settings tab
+            # switch to Settings tab
+            self.notebook.select(1)
             set_focus_to_widget(self.settings_tab.ch_arn_entry)
-            self.notebook.tab(0, state='disabled')  # lock Main tab
+
+            # lock Main tab
+            self.notebook.tab(0, state='disabled')
 
         # Set focus on widget depending on selected
         self.notebook.bind("<<NotebookTabChanged>>", self.set_focus_on_tab_changed)
@@ -120,7 +128,6 @@ class MainTab(ttk.Frame):
         self.selected_arn = tk.StringVar()
 
         self.arn_dropdown = tk.OptionMenu(arn_frame, self.selected_arn, None)
-        # self.arn_dropdown = tk.OptionMenu(arn_frame, self.selected_arn, *self.arn_names)
         self.arn_dropdown.config(width='45')
         self.arn_dropdown.pack(side='left')
 
@@ -138,7 +145,7 @@ class MainTab(ttk.Frame):
         self.submit_button = TButton(master=input_frame, text='Submit', command=self.submit_action)
         self.submit_button.pack(side='right', padx='3')
 
-        self.json_entry.bind("<Return>", self.json_entry_return_key_event) # Handling Return key press
+        self.json_entry.bind("<Return>", self.json_entry_return_key_event)  # Handling Return key press
 
         # main buttons
         buttons_frame = ttk.Frame(master=self)
@@ -157,7 +164,9 @@ class MainTab(ttk.Frame):
         self.credentials_info = tk.Text(master=credentials_frame, height=8, state='disabled')
         self.credentials_info.pack()
 
-        self.clear_credentials_button = TButton(master=credentials_frame, text='Clear', command=self.clear_credentials)
+        self.clear_credentials_button = TButton(master=credentials_frame,
+                                                text='Clear',
+                                                command=self.clear_credentials)
         self.clear_credentials_button.pack()
 
         # Log window
@@ -171,7 +180,8 @@ class MainTab(ttk.Frame):
         self.__process_json_input(self.json_entry.get())
 
     def clear_credentials(self):
-        self.update_credentials_in_main_tab() # updating credentials in the main tab with empty string
+        # updating credentials in the main tab with empty string
+        self.update_credentials_in_main_tab()
         data.AppSettings.credentials = None
 
     def start_action(self) -> None:
@@ -180,7 +190,7 @@ class MainTab(ttk.Frame):
             if self.running_thread is None or not self.running_thread.is_alive():
                 self.stop_flag = False
                 self.disable_user_input_in_widgets(True)
-                self.running_thread = threading.Thread(target=api_calls.main, args=(self, settings))  # CHECK
+                self.running_thread = threading.Thread(target=api_calls.main, args=(self, settings))
                 self.running_thread.start()
                 self.stop_button.focus_set()
 
@@ -202,9 +212,14 @@ class MainTab(ttk.Frame):
         # Add the updated options to the menu
         variable = self.selected_arn
         for arn_name in data.AppSettings.arns:
-            menu.add_command(label=arn_name, command=lambda opt=arn_name: variable.set(opt))
-        self.__master.main_tab.arn_names = list(data.AppSettings.arns.keys())
-        self.selected_arn.set(self.arn_names[0])
+            menu.add_command(label=arn_name,
+                             command=lambda opt=arn_name: variable.set(opt))
+
+        # Create list of channel names
+        arn_names = list(data.AppSettings.arns.keys())
+
+        # Select default channel name in dropdown
+        self.selected_arn.set(arn_names[0])
 
     def update_credentials_in_main_tab(self, creds: dict = None):
         self.credentials_info['state'] = 'normal'
@@ -216,19 +231,23 @@ class MainTab(ttk.Frame):
             string_to_display = helper.credentials_to_str_for_display(creds)
 
         self.credentials_info.insert('end', string_to_display)
-        self.credentials_info.yview_scroll(10, "pages")  # check if 'pages' can be changed to 'lines' or smth?
+        self.credentials_info.yview_scroll(10, "pages")
         self.credentials_info.see(0.0)
         self.credentials_info['state'] = 'disabled'
 
     def write_to_log(self, msg):
         self.__log['state'] = 'normal'
         tag = ''
-        self.__log.tag_config('warning', foreground="red")  # Create fromatting tag for warnings
-        if msg.startswith(data.warning_prefix):  # Check if message has a warning prefix
-            msg = msg[len(data.warning_prefix):]
+
+        # Create formatting tag for warnings
+        self.__log.tag_config('warning', foreground="red")
+
+        # Check if message has a warning prefix
+        if msg.startswith(data.WARNING_PREFIX):
+            msg = msg[len(data.WARNING_PREFIX):]
             tag = 'warning'
         self.__log.insert('end', f'{helper.now_datetime()} {msg}\n', tag)
-        self.__log.yview_scroll(10, "pages")  # check if 'pages' can be changed to 'lines' or smth?
+        self.__log.yview_scroll(10, "pages")
         self.__log['state'] = 'disabled'
 
     def json_entry_return_key_event(self, event):
@@ -243,7 +262,8 @@ class MainTab(ttk.Frame):
         self.json_entry.delete(0, 'end')
         set_focus_to_widget(self.start_button)
 
-    def update_credentials_in_settings(self, creds):
+    @staticmethod
+    def update_credentials_in_settings(creds):
         data.AppSettings.credentials = creds
 
     def disable_user_input_in_widgets(self, b):
@@ -282,11 +302,10 @@ class SettingsTab(ttk.Frame):
         self.message_entry = ttk.Entry(master=message_frame, textvariable=self.message)
         self.message_entry.config(width=24)
         self.message.set(data.AppSettings.metadata_message)
-        # self.message.set(self.__master.settings.metadata_message)
         self.message_entry.pack(fill='x')
         self.message_entry.bind("<KeyRelease>", self.update_message_in_settings)
 
-        # Start index
+        # Start index entry
         index_and_delay_frame = ttk.Frame(master=self)
         index_and_delay_frame.pack(fill="x", padx='10', pady='10')
 
@@ -298,21 +317,18 @@ class SettingsTab(ttk.Frame):
         self.index_entry = ttk.Entry(master=index_and_delay_frame, textvariable=self.entered_index)
         self.index_entry.config(width=4)
         self.entered_index.set(str(data.AppSettings.metadata_start_index))
-        # self.entered_index.set(self.__master.settings.metadata_start_index)
         self.index_entry.pack(side='left')
         self.index_entry.bind("<KeyRelease>", self.update_index_in_settings)
         self.index_entry.bind("<FocusOut>",
                               lambda x: self.entered_index.set('0')
                               if data.AppSettings.metadata_start_index == 0 else None)
-                              # if self.__master.settings.metadata_start_index == 0 else None)
 
-        # Delay (wait)
+        # Delay (wait) entry
         self.entered_delay = tk.IntVar()
         self.entered_delay.set(data.AppSettings.wait)
-        # self.entered_delay.set(self.__master.settings.wait)
         self.delay_entry = tk.Spinbox(master=index_and_delay_frame, from_=2, to=10,
-                                        textvariable=self.entered_delay,
-                                        width=2, state='readonly',
+                                      textvariable=self.entered_delay,
+                                      width=2, state='readonly',
                                       command=self.update_delay_in_settings)
         self.delay_entry.pack(side='right', padx=10)
         delay_entry_label = ttk.Label(master=index_and_delay_frame,
@@ -323,11 +339,13 @@ class SettingsTab(ttk.Frame):
         arn_table_frame = ttk.Frame(master=self)
         arn_table_frame.pack(fill="x", padx='10', pady='10')
 
-        self.arn_table = ttk.Treeview(master=arn_table_frame, columns=('name', 'arn'), show='headings', height=5)
+        self.arn_table = ttk.Treeview(master=arn_table_frame,
+                                      columns=('name', 'arn'),
+                                      show='headings',
+                                      height=5)
         self.arn_table.heading('name', text='Channel Name')
         self.arn_table.heading('arn', text='ARN')
         self.arn_table.column('name', width=160, stretch=False)
-        # self.insert_data_to_treeview(data.AppSettings.arns)
         self.arn_table.pack(fill='x')
 
         # Input Name/ARN fields
@@ -352,7 +370,9 @@ class SettingsTab(ttk.Frame):
         self.add_item_button = TButton(master=arn_buttons_frame, text="Add Item", command=self.add_item)
         self.add_item_button.pack(side='left', padx=15)
 
-        self.remove_item_button = TButton(master=arn_buttons_frame, text="Remove Selected", command=self.remove_item)
+        self.remove_item_button = TButton(master=arn_buttons_frame,
+                                          text="Remove Selected",
+                                          command=self.remove_item)
         self.remove_item_button.pack(side='left', padx=15)
 
         self.up_button = TButton(arn_buttons_frame, text="Move Up", command=self.move_item_up)
@@ -371,8 +391,8 @@ class SettingsTab(ttk.Frame):
         if not data.AppSettings.arns:
             self.update_info_label_in_settings_tab("You have no saved Channel ARNs.\nPlease, add at least 1 ARN.")
 
-    def update_info_label_in_settings_tab(self, msg =''):
-            self.info_label.config(text=msg)
+    def update_info_label_in_settings_tab(self, msg=''):
+        self.info_label.config(text=msg)
 
     def update_message_in_settings(self, event):
         new_message = self.message.get()
@@ -394,7 +414,7 @@ class SettingsTab(ttk.Frame):
         data.AppSettings.metadata_start_index = entry_content
 
     def insert_data_to_treeview(self, arns):
-        if arns.items(): # Check ?????
+        if arns.items():
             for name, arn in arns.items():
                 self.arn_table.insert('', 'end', values=(name, arn))
 
@@ -423,7 +443,7 @@ class SettingsTab(ttk.Frame):
             self.update_arns_in_settings()
             self.__master.main_tab.update_arn_dropbox()
 
-            if self.__master.notebook.tab(0)["state"] == 'disabled':  # CHECK here????
+            if self.__master.notebook.tab(0)["state"] == 'disabled':
                 self.__master.notebook.tab(0, state='normal')
 
     def remove_item(self):
@@ -433,6 +453,7 @@ class SettingsTab(ttk.Frame):
             # Remove selected items from the Treeview
             for item in selected_items:
                 self.arn_table.delete(item)
+
             # Update app settings
             self.update_arns_in_settings()
 
@@ -481,4 +502,3 @@ class SettingsTab(ttk.Frame):
 
 if __name__ == "__main__":
     app = App()
-
