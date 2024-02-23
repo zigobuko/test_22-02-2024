@@ -28,7 +28,7 @@ class App(tk.Tk):
         self.geometry('650x550')
         self.resizable(width=False, height=False)
 
-        # recall app settings on opening
+        # Recall app settings on opening
         data.AppSettings.from_file()
 
         # Add app title
@@ -37,11 +37,16 @@ class App(tk.Tk):
                                 font='Calibri 24 bold')
         title_label.pack()
 
-        # create notebook
+        # App menu bar
+        # Create empty menu bar
+        app_menu = tk.Menu(master=self)
+        self.config(menu=app_menu)
+
+        # Create notebook
         self.notebook = ttk.Notebook(self.master)
         self.notebook.pack()
 
-        # create tabs in notebook
+        # Create tabs in notebook
         self.main_tab = MainTab(self)
         self.add_tab(self.main_tab)
 
@@ -60,11 +65,11 @@ class App(tk.Tk):
             self.main_tab.update_arn_dropbox()
             self.settings_tab.insert_data_to_treeview(data.AppSettings.arns)
         else:
-            # switch to Settings tab
+            # Switch to Settings tab
             self.notebook.select(1)
             set_focus_to_widget(self.settings_tab.ch_arn_entry)
 
-            # lock Main tab
+            # Lock Main tab
             self.notebook.tab(0, state='disabled')
 
         # Set focus on widget depending on selected

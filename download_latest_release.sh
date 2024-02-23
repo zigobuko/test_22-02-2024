@@ -2,7 +2,7 @@
 
 # Define GitHub repository owner and name
 owner="zigobuko"
-repo="test_21-02-2024"
+repo="test_22-02-2024"
 
 # Create temp folder
 temp_folder=$(mktemp -d)
