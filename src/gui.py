@@ -73,7 +73,7 @@ class App(tk.Tk):
             self.notebook.tab(0, state='disabled')
 
         # Set focus on widget depending on selected
-        self.notebook.bind("<<NotebookTabChanged>>", self.set_focus_on_tab_changed)
+        self.notebook.bind("<<NotebookTabChanged>>", self.actions_on_switching_tabs)
 
         # on app closing
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
@@ -81,7 +81,7 @@ class App(tk.Tk):
         # run
         self.mainloop()
 
-    def set_focus_on_tab_changed(self, event):
+    def actions_on_switching_tabs(self, event):
         selected_tab = event.widget.select()
         tab_text = event.widget.tab(selected_tab, "text")
         match tab_text:
@@ -89,6 +89,7 @@ class App(tk.Tk):
                 displayed_creds = self.main_tab.credentials_info.get("1.0", "end-1c")
                 if displayed_creds:
                     set_focus_to_widget(self.main_tab.start_button)
+                self.settings_tab.update_info_label_in_settings_tab('')
             case "Settings":
                 # Can be used in future if needed
                 pass
@@ -188,6 +189,7 @@ class MainTab(ttk.Frame):
         # updating credentials in the main tab with empty string
         self.update_credentials_in_main_tab()
         data.AppSettings.credentials = None
+        set_focus_to_widget(self.json_entry)
 
     def start_action(self) -> None:
         settings = data.AppSettings
@@ -427,8 +429,8 @@ class SettingsTab(ttk.Frame):
         return True if self.arn_table.get_children() else False
 
     def add_item(self):
-        name = self.ch_name_entry.get()
-        number = self.ch_arn_entry.get()
+        name = self.ch_name_entry.get().strip()
+        number = self.ch_arn_entry.get().strip()
 
         if name and number:
             # Insert new item into the Treeview
