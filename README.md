@@ -1,10 +1,8 @@
 ![main_tab_demo.png](images%2Fmain_tab_demo.png)
 ## Introduction
 
-Sequential Metadata Sending Tool (SMST) is a standalone GUI application, designed for Twitch IVS-player-core project QEs  
-to speed up and simplify the test setup and execution process for regression tests that involve sending metadata to an IVS Live channel.  
-This tool eliminates the need to use Postman for this purpose, and allows the test engineer to focus on player testing,  
-rather than performing manual actions to send metadata, significantly reducing test execution time.
+Sequential Metadata Sending Tool (SMST) is a standalone GUI application, designed for Twitch IVS-player-core project QEs to speed up and simplify the test setup and execution process for regression tests that involve sending metadata to an IVS Live channel.  
+This tool eliminates the need to use Postman for this purpose, and allows the test engineer to focus on player testing, rather than performing manual actions to send metadata, significantly reducing test execution time.
 
 ## Features
 
