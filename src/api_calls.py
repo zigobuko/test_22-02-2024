@@ -39,13 +39,9 @@ def send_metadata(window: MainTab, settings: data.AppSettings) -> None:
     access_key, secret_access_key, session_token = cred_values
 
     # Define the API endpoint URL
-    # endpoint_url = data.AppSettings.endpoint_url
-    # TODO Check if everything works
     endpoint_url = settings.endpoint_url
 
     # Define the headers
-    # headers = data.AppSettings.headers
-    # TODO Check if everything works
     headers = settings.headers
 
     if all((access_key, secret_access_key, session_token)):
