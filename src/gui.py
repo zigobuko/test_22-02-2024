@@ -126,7 +126,7 @@ class MainTab(ttk.Frame):
 
         # arn dropdown
         arn_frame = ttk.Frame(master=self)
-        arn_frame.pack(fill="x", padx='10', pady='10')
+        arn_frame.pack(fill="x", padx='10', pady='5')
 
         arn_label = ttk.Label(master=arn_frame, text='Channel:')
         arn_label.pack(side='left')
@@ -141,11 +141,10 @@ class MainTab(ttk.Frame):
         input_frame = ttk.Frame(master=self)
         input_frame.pack(fill="x", padx='10', pady='10')
 
-        json_entry_label = ttk.Label(master=input_frame, text='Paste JSON string here:')
+        json_entry_label = ttk.Label(master=input_frame, text='Credentials JSON string:')
         json_entry_label.pack(side='left')
 
         self.json_entry = ttk.Entry(master=input_frame, width=33)
-        # self.json_entry.focus_set()
         self.json_entry.pack(side='left')
 
         self.submit_button = TButton(master=input_frame, text='Submit', command=self.submit_action)
@@ -153,19 +152,27 @@ class MainTab(ttk.Frame):
 
         self.json_entry.bind("<Return>", self.json_entry_return_key_event)  # Handling Return key press
 
+        # Add a separation line
+        # separator1 = ttk.Separator(master=self, orient='horizontal')
+        # separator1.pack(fill='x', pady='5')
+
         # main buttons
         buttons_frame = ttk.Frame(master=self)
         buttons_frame.pack(fill="x", padx='10', pady='5')
 
         self.stop_button = TButton(master=buttons_frame, text='Stop', command=self.stop_action)
-        self.stop_button.pack(side='left', padx='120')
+        self.stop_button.pack(side='left', padx='125')
 
         self.start_button = TButton(master=buttons_frame, text='Start', command=self.start_action)
         self.start_button.pack(side='left')
 
+        # Add a separation line
+        # separator2 = ttk.Separator(master=self, orient='horizontal')
+        # separator2.pack(fill='x', pady='5')
+
         # credential window
         credentials_frame = ttk.Labelframe(master=self, text="Credentials:")
-        credentials_frame.pack(fill="x", padx='10', pady='10')
+        credentials_frame.pack(fill="x", padx='10', pady='5')
 
         self.credentials_info = tk.Text(master=credentials_frame, height=8, state='disabled')
         self.credentials_info.pack()
@@ -177,7 +184,7 @@ class MainTab(ttk.Frame):
 
         # Log window
         log_frame = ttk.Labelframe(master=self, text="Logs:")
-        log_frame.pack(fill="x", padx='10', pady='10')
+        log_frame.pack(fill="x", padx='10', pady='5')
 
         self.__log = tk.Text(master=log_frame, height=10, state='disabled')
         self.__log.pack()
@@ -396,7 +403,7 @@ class SettingsTab(ttk.Frame):
         self.info_label.pack()
 
         if not data.AppSettings.arns:
-            self.update_info_label_in_settings_tab("You have no saved Channel ARNs.\nPlease, add at least 1 ARN.")
+            self.update_info_label_in_settings_tab("You have no saved Channel ARNs.\nAdd at least 1 ARN.")
 
     def update_info_label_in_settings_tab(self, msg=''):
         self.info_label.config(text=msg)
@@ -469,7 +476,7 @@ class SettingsTab(ttk.Frame):
             self.__master.main_tab.update_arn_dropbox()
         else:
             self.__master.notebook.tab(0, state='disabled')
-            self.update_info_label_in_settings_tab("You have no saved Channel ARNs.\nPlease, add at least 1 ARN.")
+            self.update_info_label_in_settings_tab("You have no saved Channel ARNs.\nAdd at least 1 ARN.")
             set_focus_to_widget(self.ch_arn_entry)
 
     def move_item_up(self):
