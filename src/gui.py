@@ -1,8 +1,8 @@
 import tkinter as tk
 from tkinter import ttk
-import data
-import api_calls
 import threading
+import api_calls
+import data
 import helper
 
 

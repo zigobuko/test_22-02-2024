@@ -1,7 +1,8 @@
+from dataclasses import dataclass
 import json
 import os
 import sys
-from dataclasses import dataclass
+
 
 # Define a formatting tag to identify server warning messages when printing in app log window
 WARNING_PREFIX = '@!'

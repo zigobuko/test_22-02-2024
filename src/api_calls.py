@@ -1,8 +1,8 @@
+import json
+import time
 import requests
 from aws_requests_auth.aws_auth import AWSRequestsAuth
-import time
 import helper
-import json
 import data
 from gui import MainTab
 
@@ -53,7 +53,6 @@ def send_metadata(window: MainTab, settings: data.AppSettings) -> None:
         auth = create_auth_instance(access_key, secret_access_key, session_token)
 
         try:
-            print("S----------------")
             # Make the API calls
             while not window.stop_flag:
                 # Define the custom request body
@@ -83,19 +82,13 @@ def send_metadata(window: MainTab, settings: data.AppSettings) -> None:
 
                 corrected_send_interval = max(send_interval - time_correction,
                                               0)  # this also ensures that the result >=0
-                # TODO: remove prints
-                print(request_time, response_time)
-                print("Time correction: ", time_correction)
-                print("Send interval (corrected): ", corrected_send_interval)
 
                 for _ in range(int(corrected_send_interval / check_interval)):
                     if window.stop_flag:
                         break
                     time.sleep(check_interval)
 
-                print("Time after sleep: ", helper.now_datetime())
         finally:
-            print("F----------------")
             window.write_to_log("Stopped")
             window.stop_action()
 
