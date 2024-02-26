@@ -10,10 +10,10 @@ This tool eliminates the need to use Postman and allows test engineers to focus 
 - Few clicks to start
 - Super simple and easy to use interface
 - Ability to customize parameters (if required)
-- Displays credential expiration time
+- Displays the expiration time of the credentials
 - Logs field to monitor sent messages and other info
 - Displays server response messages in case of errors instead of response codes (more human friendly)
-- Save multiple ARNs and choose which one to use in session
+- Save multiple channels and choose which one to use in session
 - Automatic saving of user settings
 
 <br/><br/>
