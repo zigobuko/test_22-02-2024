@@ -42,6 +42,7 @@ create an IVS channel, and run a live stream on that channel for testing.
 
 ### First-time open (Settings tab)
 ![settings_tab_first_open.png](images%2Fsettings_tab_first_open.png)
+
 The first time you open the application, you will be taken to the Settings tab.  
 You need to add a channel to send metadata to (see the appropriate QA documentation for where to find your IVS channel ARN).  
 The channel will be saved, and the next time you open the application, you won't need to add the channel again.
@@ -52,6 +53,7 @@ The channel will be saved, and the next time you open the application, you won't
 
 ### Sending metadata (Main tab)
 ![main_tab_.png](images%2Fmain_tab_.png)
+
 Make sure your IVS channel is broadcasting.
 - Copy the JSON string containing temporary credentials for your AWS account from the Isengard AWS Console Access (see the appropriate QA documentation for details)
 - On the SMST Main tab, paste the JSON string into the 'Credentials JSON string' field and click 'Submit'.
