@@ -83,6 +83,7 @@ def time_correction(request_time: datetime, response_time: datetime) -> float:
 
 def existing_arn(name, arn) -> bool:
     res = False
-    if name in data.AppSettings.arns or arn in data.AppSettings.arns.values():
-        res = True
+    if data.AppSettings.arns:
+        if (name in data.AppSettings.arns) or (arn in data.AppSettings.arns.values()):
+            res = True
     return res
