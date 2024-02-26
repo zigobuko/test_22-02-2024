@@ -62,7 +62,7 @@ class App(tk.Tk):
 
         # Check if there are ARNs saved
         if data.AppSettings.arns:
-            self.main_tab.update_arn_dropbox()
+            self.main_tab.update_arn_dropdown_list()
             self.settings_tab.insert_data_to_treeview(data.AppSettings.arns)
         else:
             # Switch to Settings tab
@@ -215,7 +215,7 @@ class MainTab(ttk.Frame):
                 widget_to_focus = self.start_button
             set_focus_to_widget(widget_to_focus)
 
-    def update_arn_dropbox(self) -> None:
+    def update_arn_dropdown_list(self) -> None:
         # Clear the existing menu
         menu = self.arn_dropdown["menu"]
         menu.delete(0, "end")
@@ -457,7 +457,7 @@ class SettingsTab(ttk.Frame):
 
         if self.arn_table_has_items():
             self.update_arns_in_settings()
-            self.__master.main_tab.update_arn_dropbox()
+            self.__master.main_tab.update_arn_dropdown_list()
 
             # Unlock Main tab
             if self.__master.notebook.tab(0)["state"] == 'disabled':
@@ -476,7 +476,7 @@ class SettingsTab(ttk.Frame):
 
         if self.arn_table_has_items():
             self.update_info_label_in_settings_tab('')
-            self.__master.main_tab.update_arn_dropbox()
+            self.__master.main_tab.update_arn_dropdown_list()
         else:
             self.__master.notebook.tab(0, state='disabled')
             self.update_info_label_in_settings_tab("You have no saved Channel ARNs.\nAdd at least 1 ARN.")
@@ -493,7 +493,7 @@ class SettingsTab(ttk.Frame):
 
         if self.arn_table_has_items():
             self.update_arns_in_settings()
-            self.__master.main_tab.update_arn_dropbox()
+            self.__master.main_tab.update_arn_dropdown_list()
 
     def move_item_down(self) -> None:
         # Move the selected item down in the table
@@ -506,7 +506,7 @@ class SettingsTab(ttk.Frame):
 
         if self.arn_table_has_items():
             self.update_arns_in_settings()
-            self.__master.main_tab.update_arn_dropbox()
+            self.__master.main_tab.update_arn_dropdown_list()
 
     def update_arns_in_settings(self) -> None:
         all_arns = {}
