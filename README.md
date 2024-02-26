@@ -33,14 +33,14 @@ curl -sSL https://raw.githubusercontent.com/zigobuko/test_22-02-2024/main/downlo
 The latest version of the application will be downloaded to your Downloads folder.  
 You can run the application directly from the Downloads folder or move it to your preferred location (e.g. desktop).
 
-### How to use
+## How to use
 
-#### Pre-requisites
+### Pre-requisites
 Live-streaming IVS channel is required.  
 The corresponding test documentation provides detailed information, but in short, you need to have an AWS account,  
 create an IVS channel, and run a live stream on that channel for testing.
 
-#### First-time open (Settings tab)
+### First-time open (Settings tab)
 ![first_open_settings_tab.png](images%2Ffirst_open_settings_tab.png)
 The first time you open the application, you will be taken to the Settings tab.  
 You need to add a channel to send metadata to (see the appropriate QA documentation for where to find your IVS channel ARN).  
@@ -50,7 +50,7 @@ The channel will be saved, and the next time you open the application, you won't
 - Enter a name for the ARN in the 'Channel Name' field. You may choose any name you prefer
 - Click "Add Item" button to save ARN
 
-#### Sending metadata (Main tab)
+### Sending metadata (Main tab)
 ![main_tab.png](images%2Fmain_tab.png)
 Make sure your IVS channel is broadcasting.
 - Copy the JSON string containing temporary credentials for your AWS account from the Isengard AWS Console Access (see the appropriate QA documentation for details)
