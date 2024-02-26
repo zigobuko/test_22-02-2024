@@ -62,10 +62,8 @@ def send_metadata(window: MainTab, settings: data.AppSettings) -> None:
 
                 response = requests.post(endpoint_url, json=request_body, headers=headers, auth=auth)
 
-                # Get response time
+                # Get response time and message from response
                 response_time = helper.now_datetime(obj=True)
-
-                # Get message from response
                 message_from_response = get_message_from_response(response, window)
 
                 # Write response message into Main tab's logs window
@@ -89,7 +87,7 @@ def send_metadata(window: MainTab, settings: data.AppSettings) -> None:
             window.stop_action()
 
 
-def create_auth_instance(access_key, secret_access_key, session_token):
+def create_auth_instance(access_key, secret_access_key, session_token) -> AWSRequestsAuth:
     auth = AWSRequestsAuth(
         aws_access_key=access_key,
         aws_secret_access_key=secret_access_key,

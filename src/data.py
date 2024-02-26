@@ -12,7 +12,7 @@ WARNING_PREFIX = '@!'
 class AppSettings:
     metadata_message: str = "testMetadata"
     metadata_start_index: int = 1
-    wait: int = 5
+    wait: int = 3
     arns: dict = None
     credentials: dict = None
     endpoint_url = "http://ivs.us-west-2.amazonaws.com/PutMetadata"

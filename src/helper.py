@@ -79,3 +79,10 @@ def time_correction(request_time: datetime, response_time: datetime) -> float:
     """The function returns the delta of two datetime objects."""
     datetime_delta = response_time - request_time
     return round(float(datetime_delta.total_seconds()), 3)
+
+
+def existing_arn(name, arn) -> bool:
+    res = False
+    if name in data.AppSettings.arns or arn in data.AppSettings.arns.values():
+        res = True
+    return res

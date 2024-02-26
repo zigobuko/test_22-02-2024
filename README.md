@@ -16,11 +16,11 @@ This tool eliminates the need to use Postman and allows test engineers to focus 
 - Save multiple ARNs and choose which one to use in session
 - Automatic saving of user settings
 
+<br/><br/>
+
 ## Getting Started
 
-### Installation
-
-Download the application:
+### Download the application:
 
 #### macOS
 
@@ -33,24 +33,26 @@ curl -sSL https://raw.githubusercontent.com/zigobuko/test_22-02-2024/main/downlo
 The latest version of the application will be downloaded to your Downloads folder.  
 You can run the application directly from the Downloads folder or move it to your preferred location (e.g. desktop).
 
+<br/><br/>
+
 ## How to use
 
 ### Pre-requisites
 Live-streaming IVS channel is required.  
-The corresponding test documentation provides detailed information, but in short, you need to have an AWS account,  
-create an IVS channel, and run a live stream on that channel for testing.
-
+The corresponding test documentation provides detailed information, but in short, you need to have an AWS account, create an IVS channel, and run a live stream on that channel for testing.
+<br/><br/>
 ### First-time open (Settings tab)
 ![settings_tab_first_open.png](images%2Fsettings_tab_first_open.png)
 
 The first time you open the application, you will be taken to the Settings tab.  
-You need to add a channel to send metadata to (see the appropriate QA documentation for where to find your IVS channel ARN).  
-The channel will be saved, and the next time you open the application, you won't need to add the channel again.
+You need to add a channel to send metadata to (see the appropriate QA documentation for where to find your IVS channel ARN).
 
 - Enter your channel ARN to the "Channel ARN" field
 - Enter a name for the ARN in the 'Channel Name' field. You may choose any name you prefer
 - Click "Add Item" button to save ARN
 
+The channel will be saved, and the next time you open the application, you won't need to add the channel again.
+<br/><br/>
 ### Sending metadata (Main tab)
 ![main_tab_.png](images%2Fmain_tab_.png)
 
@@ -58,7 +60,7 @@ Make sure your IVS channel is broadcasting.
 - Copy the JSON string containing temporary credentials for your AWS account from the Isengard AWS Console Access (see the appropriate QA documentation for details)
 - On the SMST Main tab, paste the JSON string into the 'Credentials JSON string' field and click 'Submit'.
 - Click "Start" to start sending metadata.
-
+<br/><br/>
 ### Other options
 
 #### Main Tab

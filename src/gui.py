@@ -72,16 +72,16 @@ class App(tk.Tk):
             # Lock Main tab
             self.notebook.tab(0, state='disabled')
 
-        # Set focus on widget depending on selected
+        # Apply specific actions when switching tabs
         self.notebook.bind("<<NotebookTabChanged>>", self.actions_on_switching_tabs)
 
-        # on app closing
+        # On app closing
         self.protocol("WM_DELETE_WINDOW", self.on_closing)
 
-        # run
+        # Run
         self.mainloop()
 
-    def actions_on_switching_tabs(self, event):
+    def actions_on_switching_tabs(self, event) -> None:
         selected_tab = event.widget.select()
         tab_text = event.widget.tab(selected_tab, "text")
         match tab_text:
@@ -89,7 +89,12 @@ class App(tk.Tk):
                 displayed_creds = self.main_tab.credentials_info.get("1.0", "end-1c")
                 if displayed_creds:
                     set_focus_to_widget(self.main_tab.start_button)
+
+                # Clean fields in Settings tab
                 self.settings_tab.update_info_label_in_settings_tab('')
+                self.settings_tab.ch_name_entry.delete(0, tk.END)
+                self.settings_tab.ch_arn_entry.delete(0, tk.END)
+
             case "Settings":
                 # Can be used in future if needed
                 pass
@@ -107,10 +112,10 @@ class App(tk.Tk):
         self.main_tab.update_credentials_in_main_tab(saved_credentials)
         set_focus_to_widget(self.main_tab.start_button)
 
-    def add_tab(self, tab):
+    def add_tab(self, tab) -> None:
         self.notebook.add(tab, text=tab.name)
 
-    def on_closing(self):
+    def on_closing(self) -> None:
         data.AppSettings.to_file()
         self.destroy()
 
@@ -152,10 +157,6 @@ class MainTab(ttk.Frame):
 
         self.json_entry.bind("<Return>", self.json_entry_return_key_event)  # Handling Return key press
 
-        # Add a separation line
-        # separator1 = ttk.Separator(master=self, orient='horizontal')
-        # separator1.pack(fill='x', pady='5')
-
         # main buttons
         buttons_frame = ttk.Frame(master=self)
         buttons_frame.pack(fill="x", padx='10', pady='5')
@@ -166,11 +167,7 @@ class MainTab(ttk.Frame):
         self.start_button = TButton(master=buttons_frame, text='Start', command=self.start_action)
         self.start_button.pack(side='left')
 
-        # Add a separation line
-        # separator2 = ttk.Separator(master=self, orient='horizontal')
-        # separator2.pack(fill='x', pady='5')
-
-        # credential window
+        # Credential window
         credentials_frame = ttk.Labelframe(master=self, text="Credentials:")
         credentials_frame.pack(fill="x", padx='10', pady='5')
 
@@ -189,10 +186,10 @@ class MainTab(ttk.Frame):
         self.__log = tk.Text(master=log_frame, height=10, state='disabled')
         self.__log.pack()
 
-    def submit_action(self):
+    def submit_action(self) -> None:
         self.__process_json_input(self.json_entry.get())
 
-    def clear_credentials(self):
+    def clear_credentials(self) -> None:
         # updating credentials in the main tab with empty string
         self.update_credentials_in_main_tab()
         data.AppSettings.credentials = None
@@ -218,7 +215,7 @@ class MainTab(ttk.Frame):
                 widget_to_focus = self.start_button
             set_focus_to_widget(widget_to_focus)
 
-    def update_arn_dropbox(self):
+    def update_arn_dropbox(self) -> None:
         # Clear the existing menu
         menu = self.arn_dropdown["menu"]
         menu.delete(0, "end")
@@ -235,7 +232,7 @@ class MainTab(ttk.Frame):
         # Select default channel name in dropdown
         self.selected_arn.set(arn_names[0])
 
-    def update_credentials_in_main_tab(self, creds: dict = None):
+    def update_credentials_in_main_tab(self, creds: dict = None) -> None:
         self.credentials_info['state'] = 'normal'
         self.credentials_info.delete(1.0, 'end')
 
@@ -249,7 +246,7 @@ class MainTab(ttk.Frame):
         self.credentials_info.see(0.0)
         self.credentials_info['state'] = 'disabled'
 
-    def write_to_log(self, msg):
+    def write_to_log(self, msg) -> None:
         self.__log['state'] = 'normal'
         tag = ''
 
@@ -264,10 +261,10 @@ class MainTab(ttk.Frame):
         self.__log.yview_scroll(10, "pages")
         self.__log['state'] = 'disabled'
 
-    def json_entry_return_key_event(self, event):
+    def json_entry_return_key_event(self, event) -> None:
         self.submit_action()
 
-    def __process_json_input(self, json_input):
+    def __process_json_input(self, json_input) -> None:
         if not json_input:
             return
         creds = helper.get_credentials_form_json_string(str(json_input), self)
@@ -277,10 +274,10 @@ class MainTab(ttk.Frame):
         set_focus_to_widget(self.start_button)
 
     @staticmethod
-    def update_credentials_in_settings(creds):
+    def update_credentials_in_settings(creds) -> None:
         data.AppSettings.credentials = creds
 
-    def disable_user_input_in_widgets(self, b):
+    def disable_user_input_in_widgets(self, b) -> None:
         if b:
             state = 'disabled'
             self.__master.settings_tab.delay_entry['state'] = state
@@ -405,18 +402,18 @@ class SettingsTab(ttk.Frame):
         if not data.AppSettings.arns:
             self.update_info_label_in_settings_tab("You have no saved Channel ARNs.\nAdd at least 1 ARN.")
 
-    def update_info_label_in_settings_tab(self, msg=''):
+    def update_info_label_in_settings_tab(self, msg='') -> None:
         self.info_label.config(text=msg)
 
-    def update_message_in_settings(self, event):
+    def update_message_in_settings(self, event) -> None:
         new_message = self.message.get()
         data.AppSettings.metadata_message = new_message
 
-    def update_delay_in_settings(self):
+    def update_delay_in_settings(self) -> None:
         new_delay_value = int(self.entered_delay.get())
         data.AppSettings.wait = new_delay_value
 
-    def update_index_in_settings(self, event):
+    def update_index_in_settings(self, event) -> None:
         entry_content = self.entered_index.get()
 
         if not entry_content:
@@ -427,7 +424,7 @@ class SettingsTab(ttk.Frame):
             entry_content = 0
         data.AppSettings.metadata_start_index = entry_content
 
-    def insert_data_to_treeview(self, arns):
+    def insert_data_to_treeview(self, arns) -> None:
         if arns.items():
             for name, arn in arns.items():
                 self.arn_table.insert('', 'end', values=(name, arn))
@@ -435,11 +432,16 @@ class SettingsTab(ttk.Frame):
     def arn_table_has_items(self) -> bool:
         return True if self.arn_table.get_children() else False
 
-    def add_item(self):
+    def add_item(self) -> None:
         name = self.ch_name_entry.get().strip()
         number = self.ch_arn_entry.get().strip()
 
         if name and number:
+            # Check if entered channel data already exists in saved channels
+            if helper.existing_arn(name, number):
+                self.update_info_label_in_settings_tab("Channel with entered name or ARN already exists!")
+                return
+
             # Insert new item into the Treeview
             self.arn_table.insert(parent='', index='end', values=(name, number))
 
@@ -457,10 +459,11 @@ class SettingsTab(ttk.Frame):
             self.update_arns_in_settings()
             self.__master.main_tab.update_arn_dropbox()
 
+            # Unlock Main tab
             if self.__master.notebook.tab(0)["state"] == 'disabled':
                 self.__master.notebook.tab(0, state='normal')
 
-    def remove_item(self):
+    def remove_item(self) -> None:
         selected_items = self.arn_table.selection()
 
         if selected_items:
@@ -479,7 +482,7 @@ class SettingsTab(ttk.Frame):
             self.update_info_label_in_settings_tab("You have no saved Channel ARNs.\nAdd at least 1 ARN.")
             set_focus_to_widget(self.ch_arn_entry)
 
-    def move_item_up(self):
+    def move_item_up(self) -> None:
         # Move the selected item up in the table
         selected_item = self.arn_table.selection()
 
@@ -492,7 +495,7 @@ class SettingsTab(ttk.Frame):
             self.update_arns_in_settings()
             self.__master.main_tab.update_arn_dropbox()
 
-    def move_item_down(self):
+    def move_item_down(self) -> None:
         # Move the selected item down in the table
         selected_item = self.arn_table.selection()
 
@@ -505,7 +508,7 @@ class SettingsTab(ttk.Frame):
             self.update_arns_in_settings()
             self.__master.main_tab.update_arn_dropbox()
 
-    def update_arns_in_settings(self):
+    def update_arns_in_settings(self) -> None:
         all_arns = {}
         for item_id in self.arn_table.get_children():
             values = self.arn_table.item(item_id, 'values')
