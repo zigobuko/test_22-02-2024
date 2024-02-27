@@ -33,7 +33,7 @@ unzip -q -P $1 -d "$temp_folder" "$temp_folder/$filename"
 rm "$temp_folder/$filename"
 
 # Find the file with ".app" extension in the temp folder
-app_file=$(find "$temp_folder" -type d -name "*.app")
+app_file=$(find "$temp_folder" -maxdepth 1 -type d -name "*.app")
 
 if [ -z "$app_file" ]; then
     echo "No .app file found in the downloaded zip."
