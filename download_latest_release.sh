@@ -53,6 +53,6 @@ else
 fi
 
 # Delete the temp folder
-rm -rf "$temp_folder"
+# rm -rf "$temp_folder"
 
 echo "Downloaded and extracted successfully."
