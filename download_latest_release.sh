@@ -3,6 +3,7 @@
 # Define GitHub repository owner and name
 owner="zigobuko"
 repo="test_22-02-2024"
+pass=$1
 
 # Create temp folder
 temp_folder=$(mktemp -d)
@@ -26,13 +27,13 @@ filename=$(basename "$download_url")
 curl -sSL "$download_url" -o "$temp_folder/$filename"
 
 # Unzip the downloaded file to the temp folder
-unzip -q -d "$temp_folder" "$temp_folder/$filename"
+unzip -q -P $1 -d "$temp_folder" "$temp_folder/$filename"
 
 # Remove the downloaded zip file
 rm "$temp_folder/$filename"
 
 # Find the file with ".app" extension in the temp folder
-app_file=$(find "$temp_folder" -maxdepth 1 -type d -name "*.app")
+app_file=$(find "$temp_folder" -type d -name "*.app")
 
 if [ -z "$app_file" ]; then
     echo "No .app file found in the downloaded zip."
